@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/navigation_welcome">
+
+    <fragment
+        android:id="@+id/navigation_welcome"
+        android:name="com.example.nutrition_app.views.WelcomeFragment">
+        <action
+            android:id="@+id/action_welcome_to_register"
+            app:destination="@id/navigation_register" />
+        <action
+            android:id="@+id/action_welcome_to_login"
+            app:destination="@id/navigation_login" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_register"
+        android:name="com.example.nutrition_app.views.RegisterFragment">
+        <action
+            android:id="@+id/action_register_to_profile"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_welcome"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_login"
+        android:name="com.example.nutrition_app.views.LoginFragment">
+        <action
+            android:id="@+id/action_login_to_profile"
+            app:destination="@id/navigation_profile"
+            app:popUpTo="@id/navigation_welcome"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.nutrition_app.views.ProfileFragment">
+        <action
+            android:id="@+id/action_profile_to_welcome"
+            app:destination="@id/navigation_welcome"
+            app:popUpTo="@id/navigation_welcome"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_recipes"
+        android:name="com.example.nutrition_app.views.RecipesFragment">
+        <action
+            android:id="@+id/action_recipes_to_recipe_edit"
+            app:destination="@id/navigation_recipe_edit" />
+    </fragment>
+    <fragment
+        android:id="@+id/navigation_diary"
+        android:name="com.example.nutrition_app.views.DiaryFragment" />
+    <fragment
+        android:id="@+id/navigation_recommendations"
+        android:name="com.example.nutrition_app.views.RecommendationsFragment" />
+    <fragment
+        android:id="@+id/navigation_recipe_edit"
+        android:name="com.example.nutrition_app.views.RecipeEditFragment">
+        <action
+            android:id="@+id/action_recipe_edit_to_recipes"
+            app:destination="@id/navigation_recipes"
+            app:popUpTo="@id/navigation_recipes"
+            app:popUpToInclusive="true" />
+        <argument
+            android:name="recipeId"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
+
+</navigation>

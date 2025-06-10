@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">NutritionApp</string>
+    <string name="registration">Создание аккаунта</string>
+    <string name="first_name">Введите имя</string>
+    <string name="age">Введите возраст</string>
+    <string name="height">Введите свой рост</string>
+    <string name="weight">Введите свой вес</string>
+    <string name="email">Введите e-mail</string>
+    <string name="password">Введите пароль</string>
+    <string name="gender_prompt">Выберите пол</string>
+    <string-array name="gender_options">
+        <item>Мужской</item>
+        <item>Женский</item>
+    </string-array>
+    <string name="goal_prompt">Выберите цель</string>
+    <string-array name="goal_options">
+        <item>Поддержание веса</item>
+        <item>Снижение веса</item>
+        <item>Набор веса</item>
+    </string-array>
+    <string name="fill_all_fields">Заполните все поля</string>
+    <string name="invalid_age">Неверный формат возраста</string>
+    <string name="invalid_height">Неверный формат роста</string>
+    <string name="invalid_weight">Неверный формат веса</string>
+    <string name="registration_success">Регистрация успешна</string>
+    <string name="registration_error">Ошибка: %1$s</string>
+    <string name="email_exists">Email уже зарегистрирован</string>
+    <string name="add_recipe">Добавить рецепт</string>
+</resources>
