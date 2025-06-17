@@ -41,14 +41,13 @@ class ProfileViewModel(private val db: AppDatabase) : ViewModel() {
                 return@launch
             }
 
-            // Валидация
             val ageInt = age.toIntOrNull()
-            if (ageInt == null || ageInt <= 18) {
+            if (ageInt == null || ageInt <= 18 || ageInt > 100) {
                 _updateResult.value = Result.failure(Exception("Некорректный возраст"))
                 return@launch
             }
             val weightFloat = weight.toFloatOrNull()
-            if (weightFloat == null || weightFloat <= 0) {
+            if (weightFloat == null || weightFloat <= 30 || weightFloat > 300) {
                 _updateResult.value = Result.failure(Exception("Некорректный вес"))
                 return@launch
             }
@@ -61,14 +60,12 @@ class ProfileViewModel(private val db: AppDatabase) : ViewModel() {
                 return@launch
             }
 
-            // Проверка уникальности email
             val existingUser = db.userDao().getUserByEmail(email)
             if (existingUser != null && existingUser.id != userId) {
                 _updateResult.value = Result.failure(Exception("Email уже занят"))
                 return@launch
             }
 
-            // Обновление данных
             val updatedUser = user.copy(
                 age = ageInt,
                 weight = weightFloat,

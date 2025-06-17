@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F7FDE7">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -15,11 +16,12 @@
             android:layout_width="0dp"
             android:layout_height="150dp"
             android:minHeight="48dp"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             android:src="@drawable/placeholder_image"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/title_edit"
@@ -27,23 +29,26 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:hint="Название рецепта"
+            android:layout_marginTop="15dp"
+            android:fontFamily="serif"
             android:inputType="text"
             app:layout_constraintTop_toBottomOf="@id/recipe_photo"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+             />
 
         <EditText
             android:id="@+id/calories_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:minHeight="48dp"
+            android:layout_marginTop="15dp"
+            android:fontFamily="serif"
             android:hint="Калории (ккал)"
             android:inputType="numberDecimal"
             app:layout_constraintTop_toBottomOf="@id/title_edit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
         <EditText
             android:id="@+id/protein_edit"
@@ -55,7 +60,8 @@
             app:layout_constraintTop_toBottomOf="@id/calories_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"
+            android:fontFamily="serif" />
 
         <EditText
             android:id="@+id/fat_edit"
@@ -67,7 +73,8 @@
             app:layout_constraintTop_toBottomOf="@id/protein_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"
+            android:fontFamily="serif"/>
 
         <EditText
             android:id="@+id/carbs_edit"
@@ -79,13 +86,15 @@
             app:layout_constraintTop_toBottomOf="@id/fat_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"
+            android:fontFamily="serif"/>
 
         <EditText
             android:id="@+id/instructions_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Инструкции"
+            android:fontFamily="serif"
             android:inputType="textMultiLine"
             android:minLines="4"
             app:layout_constraintTop_toBottomOf="@id/carbs_edit"
@@ -101,18 +110,34 @@
             app:layout_constraintTop_toBottomOf="@id/instructions_edit"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="15dp"
+            android:backgroundTint="#94AF48"
+            android:fontFamily="serif"
+            android:textStyle="bold"/>
+        <Button
+            android:id="@+id/cancel_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Отменить"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#CCCCCC"
+            android:fontFamily="serif"
+            app:layout_constraintTop_toBottomOf="@id/save_button"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
 
         <TextView
             android:id="@+id/error_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/error_red"
+            android:textColor="@color/nav_item_color"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/save_button"
+            app:layout_constraintTop_toBottomOf="@id/cancel_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginTop="8dp" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

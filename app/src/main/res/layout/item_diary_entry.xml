@@ -1,24 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="4dp"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="4dp"
+    android:background="@android:color/white">
 
-    <TextView
-        android:id="@+id/entryTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Название записи"
-        android:textStyle="italic"
-        android:textSize="14sp"/>
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/entryDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Детали записи"
-        android:textSize="12sp"
-        android:layout_marginTop="2dp"/>
-</LinearLayout>
+        <!-- Название приема, слева -->
+        <TextView
+            android:id="@+id/entryTitle"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Прием пищи"
+            android:textColor="#94AF48"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:gravity="start" />
+
+        <!-- Контейнер с подробностями, справа (вертикально) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="end">
+
+            <TextView
+                android:id="@+id/waterAmountText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="250 мл"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/caloriesText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Калории: 300"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/proteinText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Б: 20 г"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/fatText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ж: 10 г"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/carbsText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="У: 40 г"
+                android:textSize="14sp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

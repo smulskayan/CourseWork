@@ -13,6 +13,15 @@ class RegisterViewModel(private val db: AppDatabase) : ViewModel() {
     private val _registrationResult = MutableLiveData<Result<Int>>()
     val registrationResult: LiveData<Result<Int>> = _registrationResult
 
+    private val _heightError = MutableLiveData<String?>()
+    val heightError: LiveData<String?> = _heightError
+
+    private val _weightError = MutableLiveData<String?>()
+    val weightError: LiveData<String?> = _weightError
+
+    private val _ageError = MutableLiveData<String?>()
+    val ageError: LiveData<String?> = _ageError
+
     private val _emailError = MutableLiveData<String?>()
     val emailError: LiveData<String?> = _emailError
 
@@ -31,7 +40,6 @@ class RegisterViewModel(private val db: AppDatabase) : ViewModel() {
         goal: String
     ) {
         viewModelScope.launch {
-            // Валидация
             if (firstName.isBlank()) {
                 _registrationResult.value = Result.failure(Exception("Имя не может быть пустым"))
                 return@launch
@@ -40,16 +48,33 @@ class RegisterViewModel(private val db: AppDatabase) : ViewModel() {
                 _registrationResult.value = Result.failure(Exception("Выберите пол"))
                 return@launch
             }
+
             val heightFloat = height.toFloatOrNull()
-            if (heightFloat == null || heightFloat <= 0) {
+            if (heightFloat == null || heightFloat <= 100 || heightFloat >= 300) {
+                _heightError.value = "Неверный формат роста"
                 _registrationResult.value = Result.failure(Exception("Некорректный рост"))
                 return@launch
+            } else {
+                _heightError.value = null
             }
+
             val weightFloat = weight.toFloatOrNull()
-            if (weightFloat == null || weightFloat <= 0) {
+            if (weightFloat == null || weightFloat <= 30 || weightFloat >= 300) {
+                _weightError.value = "Неверный формат веса"
                 _registrationResult.value = Result.failure(Exception("Некорректный вес"))
                 return@launch
+            } else {
+                _weightError.value = null
             }
+
+            if (age <= 18 || age > 100) {
+                _ageError.value = "Некорректный возраст"
+                _registrationResult.value = Result.failure(Exception("Некорректный возраст"))
+                return@launch
+            } else {
+                _ageError.value = null
+            }
+
             if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                 _emailError.value = "Некорректный email"
                 _registrationResult.value = Result.failure(Exception("Некорректный email"))
@@ -70,7 +95,6 @@ class RegisterViewModel(private val db: AppDatabase) : ViewModel() {
                 return@launch
             }
 
-            // Проверка уникальности email
             val existingUser = db.userDao().getUserByEmail(email)
             if (existingUser != null) {
                 _emailError.value = "Email уже занят"
@@ -78,7 +102,6 @@ class RegisterViewModel(private val db: AppDatabase) : ViewModel() {
                 return@launch
             }
 
-            // Сохранение пользователя
             val user = User(
                 firstName = firstName,
                 gender = gender,

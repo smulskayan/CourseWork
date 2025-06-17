@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition_app.model.AppDatabase
-import com.example.nutrition_app.model.entities.User
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val db: AppDatabase) : ViewModel() {

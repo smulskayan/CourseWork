@@ -25,6 +25,7 @@ class RegisterFragment : Fragment() {
     }
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
@@ -34,14 +35,54 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.backButton.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
-        // Настройка списков выбора
         val genders = arrayOf("Мужской", "Женский")
         binding.genderSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, genders)
         val goals = arrayOf("Поддержание веса", "Снижение веса", "Набор веса")
         binding.goalSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, goals)
 
-        // Валидация на лету
+        binding.heightEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val heightFloat = s.toString().toFloatOrNull()
+                if (heightFloat == null || heightFloat <= 100 || heightFloat >= 300) {
+                    binding.heightEditText.error = "Неверный формат роста"
+                } else {
+                    binding.heightEditText.error = null
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.weightEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val weightFloat = s.toString().toFloatOrNull()
+                if (weightFloat == null || weightFloat <= 30 || weightFloat >= 300) {
+                    binding.weightEditText.error = "Неверный формат веса"
+                } else {
+                    binding.weightEditText.error = null
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+        binding.ageText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val age = s.toString().toIntOrNull()
+                if (age == null || age <= 18 || age > 100) {
+                    binding.ageText.error = "Некорректный возраст"
+                } else {
+                    binding.ageText.error = null
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
         binding.emailEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -52,7 +93,8 @@ class RegisterFragment : Fragment() {
                     binding.emailEditText.error = null
                 }
             }
-        })
+        }
+        )
 
         binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -78,7 +120,6 @@ class RegisterFragment : Fragment() {
             }
         })
 
-        // Обработка регистрации
         binding.registerButton.setOnClickListener {
             val firstName = binding.firstNameEditText.text.toString()
             val gender = binding.genderSpinner.selectedItem.toString()
@@ -90,10 +131,24 @@ class RegisterFragment : Fragment() {
             val confirmPassword = binding.confirmPasswordEditText.text.toString()
             val goal = binding.goalSpinner.selectedItem.toString()
 
-            viewModel.register(firstName, gender, age, height, weight, email, password, confirmPassword, goal)
+            val hasError = listOf(
+                binding.ageText,
+                binding.heightEditText,
+                binding.weightEditText,
+                binding.emailEditText,
+                binding.passwordEditText,
+                binding.confirmPasswordEditText
+            ).any { it.error != null }
+
+            if (!hasError) {
+                viewModel.register(firstName, gender, age, height, weight, email, password, confirmPassword, goal)
+            } else {
+                binding.errorTextView.text = "Пожалуйста, исправьте ошибки в форме"
+                binding.errorTextView.visibility = View.VISIBLE
+            }
+
         }
 
-        // Наблюдение за результатом
         viewModel.registrationResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess { userId ->
                 requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
@@ -113,6 +168,18 @@ class RegisterFragment : Fragment() {
             binding.passwordEditText.error = error
             binding.confirmPasswordEditText.error = error
         }
+        viewModel.heightError.observe(viewLifecycleOwner) { error ->
+            binding.heightEditText.error = error
+        }
+
+        viewModel.weightError.observe(viewLifecycleOwner) { error ->
+            binding.weightEditText.error = error
+        }
+
+        viewModel.ageError.observe(viewLifecycleOwner) { error ->
+            binding.ageText.error = error
+        }
+
     }
 
     override fun onDestroyView() {

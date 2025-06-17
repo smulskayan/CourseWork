@@ -1,46 +1,74 @@
 package com.example.nutrition_app.viewmodel
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition_app.model.AppDatabase
 import com.example.nutrition_app.model.entities.Recipe
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class RecipesViewModel(private val db: AppDatabase) : ViewModel() {
-    private val _favoriteRecipes = MutableLiveData<List<Recipe>>()
-    val favoriteRecipes: LiveData<List<Recipe>> = _favoriteRecipes
+    private val _allRecipes = MutableLiveData<List<Recipe>>()
+    val allRecipes: LiveData<List<Recipe>> = _allRecipes
 
-    private val _userRecipes = MutableLiveData<List<Recipe>>()
-    val userRecipes: LiveData<List<Recipe>> = _userRecipes
+    private val _showFavoriteTitle = MutableLiveData<Boolean>()
+    val showFavoriteTitle: LiveData<Boolean> = _showFavoriteTitle
 
-    private val _updateResult = MutableLiveData<Result<Unit>>()
-    val updateResult: LiveData<Result<Unit>> = _updateResult
+    private val _navigationEvent = MutableLiveData<NavigationEvent>()
+    val navigationEvent: LiveData<NavigationEvent> = _navigationEvent
 
-    fun loadRecipes(userId: Int) {
+    private val _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
+    private var userId: Int = -1
+
+    sealed class NavigationEvent {
+        object NavigateToRecipeEdit : NavigationEvent()
+    }
+
+    fun loadUserId(context: Context) {
         viewModelScope.launch {
-            db.recipeDao().getFavoriteRecipes(userId).collect { favorites ->
-                _favoriteRecipes.value = favorites
-            }
-        }
-        viewModelScope.launch {
-            db.recipeDao().getUserRecipes(userId).collect { recipes ->
-                _userRecipes.value = recipes
+            userId = context.getSharedPreferences("prefs", Context.MODE_PRIVATE)
+                .getInt("userId", -1)
+            if (userId != -1) {
+                db.recipeDao().getUserRecipes(userId)
+                    .map { recipes ->
+                        recipes.sortedWith(compareByDescending<Recipe> { it.isFavorite }.thenBy { it.title })
+                    }
+                    .catch { e ->
+                        _error.value = "Ошибка загрузки рецептов: ${e.message}"
+                    }
+                    .collect { sortedRecipes ->
+                        _allRecipes.value = sortedRecipes
+                        _showFavoriteTitle.value = sortedRecipes.any { it.isFavorite }
+                    }
+            } else {
+                _error.value = "Пользователь не найден"
             }
         }
     }
 
     fun toggleFavorite(recipeId: Int) {
         viewModelScope.launch {
-            val recipe = db.recipeDao().getRecipeById(recipeId)
-            if (recipe != null) {
-                val updatedRecipe = recipe.copy(isFavorite = !recipe.isFavorite)
-                db.recipeDao().update(updatedRecipe)
+            try {
+                val recipe = db.recipeDao().getRecipeById(recipeId)
+                if (recipe != null) {
+                    val updatedRecipe = recipe.copy(isFavorite = !recipe.isFavorite)
+                    db.recipeDao().update(updatedRecipe)
+                }
+            } catch (e: Exception) {
+                _error.value = "Ошибка обновления избранного: ${e.message}"
             }
         }
+    }
+
+    fun onAddRecipeClicked() {
+        _navigationEvent.value = NavigationEvent.NavigateToRecipeEdit
     }
 
     class Factory(private val db: AppDatabase) : ViewModelProvider.Factory {

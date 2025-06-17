@@ -1,88 +1,116 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#F7FDE7"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/recommendationsTitle"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Рекомендации на день"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/water_consumed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Выпито воды: 0 мл"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/recommendationsTitle"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <TextView
+            android:id="@+id/recommendationsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Рекомендации на день"
+            android:layout_marginTop="35dp"
+            android:textColor="#94AF48"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:fontFamily="serif"
+            android:layout_marginBottom="24dp" />
 
-    <TextView
-        android:id="@+id/water_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Осталось воды: 0 мл"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/water_consumed"
-        app:layout_constraintStart_toStartOf="parent"/>
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-    <TextView
-        android:id="@+id/calories_consumed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Потреблено калорий: 0"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/water_remaining"
-        app:layout_constraintStart_toStartOf="parent"/>
+            <TableLayout
+                android:id="@+id/recommendations_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:stretchColumns="1,2"
+                android:fontFamily="serif"
+                android:divider="?android:attr/dividerVertical"
+                android:showDividers="middle"
+                android:padding="8dp">
 
-    <TextView
-        android:id="@+id/calories_remaining"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Осталось калорий: 0"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/calories_consumed"
-        app:layout_constraintStart_toStartOf="parent"/>
+                <!-- Заголовок -->
+                <TableRow>
+                    <TextView
+                        android:text="  "
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:padding="12dp"
+                        android:fontFamily="serif" />
+                    <TextView
+                        android:text="Цель"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:padding="12dp"
+                        android:fontFamily="serif" />
+                    <TextView
+                        android:text="Остаток"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:padding="12dp"
+                        android:fontFamily="serif" />
+                </TableRow>
 
-    <TextView
-        android:id="@+id/protein_consumed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Белки: 0 г"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/calories_remaining"
-        app:layout_constraintStart_toStartOf="parent"/>
+                <!-- Вода -->
+                <TableRow>
+                    <TextView android:text="Вода" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/water_consumed" android:text="0 мл" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/water_remaining" android:text="0 мл" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                </TableRow>
 
-    <TextView
-        android:id="@+id/fat_consumed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Жиры: 0 г"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/protein_consumed"
-        app:layout_constraintStart_toStartOf="parent"/>
+                <!-- Калории -->
+                <TableRow>
+                    <TextView android:text="Калории" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/calories_consumed" android:text="0" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/calories_remaining" android:text="0" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                </TableRow>
 
-    <TextView
-        android:id="@+id/carbs_consumed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Углеводы: 0 г"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/fat_consumed"
-        app:layout_constraintStart_toStartOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <!-- Белки -->
+                <TableRow>
+                    <TextView android:text="Белки" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/protein_target" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/protein_remaining" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                </TableRow>
+
+                <!-- Жиры -->
+                <TableRow>
+                    <TextView android:text="Жиры" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/fat_target" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/fat_remaining" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                </TableRow>
+
+                <!-- Углеводы -->
+                <TableRow>
+                    <TextView android:text="Углеводы" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/carbs_target" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                    <TextView android:id="@+id/carbs_remaining" android:text="0 г" android:textSize="18sp" android:padding="12dp" android:fontFamily="serif" />
+                </TableRow>
+
+            </TableLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/goal_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textColor="#94AF48"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:layout_marginTop="24dp"
+            android:fontFamily="serif" />
+
+    </LinearLayout>
+</ScrollView>

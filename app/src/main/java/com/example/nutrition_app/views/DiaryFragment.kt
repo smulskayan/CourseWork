@@ -1,10 +1,9 @@
 package com.example.nutrition_app.views
 
+import android.content.Context
 import android.os.Bundle
-import android.util.Log // ✅ Добавлено
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -13,12 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.nutrition_app.R
 import com.example.nutrition_app.model.entities.FoodDiary
 import com.example.nutrition_app.viewmodel.DiaryViewModel
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class DiaryFragment : Fragment() {
 
     private lateinit var viewModel: DiaryViewModel
     private lateinit var recyclerView: RecyclerView
-    private lateinit var addButton: Button
+    private lateinit var addButton: FloatingActionButton
     private lateinit var waterForm: LinearLayout
     private lateinit var foodForm: LinearLayout
     private lateinit var waterAmountInput: EditText
@@ -36,7 +36,8 @@ class DiaryFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_diary, container, false)
 
-        val userId = 1 // 🔁 Временно жёстко задан
+        val userId = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
+            .getInt("userId", -1)
 
         viewModel = ViewModelProvider(
             this,
@@ -65,27 +66,81 @@ class DiaryFragment : Fragment() {
             recyclerView.adapter = DiaryAdapter(groupedEntries)
         }
 
+        val cancelWaterButton = view.findViewById<Button>(R.id.cancelWaterButton)
+        val cancelFoodButton = view.findViewById<Button>(R.id.cancelFoodButton)
+
+        cancelWaterButton.setOnClickListener {
+            waterForm.visibility = View.GONE
+            waterAmountInput.text.clear()
+        }
+
+        cancelFoodButton.setOnClickListener {
+            foodForm.visibility = View.GONE
+            foodGramsInput.text.clear()
+            foodCaloriesInput.text.clear()
+            foodProteinInput.text.clear()
+            foodFatInput.text.clear()
+            foodCarbsInput.text.clear()
+        }
+
         addButton.setOnClickListener {
             showAddMenu(it)
         }
 
+        waterAmountInput.addTextChangedListener(numberValidator(waterAmountInput, "Введите положительное значение"))
+
+        foodGramsInput.addTextChangedListener(numberValidator(foodGramsInput, "Введите массу > 0"))
+        foodCaloriesInput.addTextChangedListener(numberValidator(foodCaloriesInput, "Введите калории > 0"))
+        foodProteinInput.addTextChangedListener(numberValidator(foodProteinInput, "Введите белки ≥ 0"))
+        foodFatInput.addTextChangedListener(numberValidator(foodFatInput, "Введите жиры ≥ 0"))
+        foodCarbsInput.addTextChangedListener(numberValidator(foodCarbsInput, "Введите углеводы ≥ 0"))
+
         submitWaterButton.setOnClickListener {
-            val waterMl = waterAmountInput.text.toString().toFloatOrNull() ?: 0f
-            if (waterMl > 0) {
-                viewModel.addWaterEntry(waterMl) // ✅ userId убран
+            val waterMl = waterAmountInput.text.toString().toFloatOrNull()
+            if (waterMl == null || waterMl <= 0f) {
+                waterAmountInput.error = "Введите значение > 0"
+            } else {
+                viewModel.addWaterEntry(waterMl)
                 waterForm.visibility = View.GONE
                 waterAmountInput.text.clear()
             }
         }
 
         submitFoodButton.setOnClickListener {
-            val grams = foodGramsInput.text.toString().toFloatOrNull() ?: 0f
-            val calories = foodCaloriesInput.text.toString().toFloatOrNull() ?: 0f
-            val protein = foodProteinInput.text.toString().toFloatOrNull() ?: 0f
-            val fat = foodFatInput.text.toString().toFloatOrNull() ?: 0f
-            val carbs = foodCarbsInput.text.toString().toFloatOrNull() ?: 0f
-            if (grams > 0 && calories > 0f) {
-                viewModel.addFoodEntry(grams, calories, protein, fat, carbs) // ✅ userId убран
+            val grams = foodGramsInput.text.toString().toFloatOrNull()
+            val calories = foodCaloriesInput.text.toString().toFloatOrNull()
+            val protein = foodProteinInput.text.toString().toFloatOrNull()
+            val fat = foodFatInput.text.toString().toFloatOrNull()
+            val carbs = foodCarbsInput.text.toString().toFloatOrNull()
+
+            var isValid = true
+
+            if (grams == null || grams <= 0f) {
+                foodGramsInput.error = "Введите массу > 0"
+                isValid = false
+            }
+            if (calories == null || calories <= 0f) {
+                foodCaloriesInput.error = "Введите калории > 0"
+                isValid = false
+            }
+            if (protein == null) {
+                foodProteinInput.error = "Введите количество белков"
+                isValid = false
+            }
+            if (fat == null) {
+                foodFatInput.error = "Введите количество жиров"
+                isValid = false
+            }
+            if (carbs == null) {
+                foodCarbsInput.error = "Введите количество углеводов"
+                isValid = false
+            }
+
+            if (isValid) {
+                viewModel.addFoodEntry(
+                    grams!!, calories!!,
+                    protein!!, fat!!, carbs!!
+                )
                 foodForm.visibility = View.GONE
                 foodGramsInput.text.clear()
                 foodCaloriesInput.text.clear()
@@ -116,6 +171,15 @@ class DiaryFragment : Fragment() {
             true
         }
         popup.show()
+    }
+
+    private fun numberValidator(view: EditText, errorMsg: String) = object : android.text.TextWatcher {
+        override fun afterTextChanged(s: android.text.Editable?) {
+            val value = s.toString().toFloatOrNull()
+            view.error = if (value == null || value < 0f) errorMsg else null
+        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
     private fun groupEntriesByDay(entries: List<FoodDiary>): List<DayEntry> {

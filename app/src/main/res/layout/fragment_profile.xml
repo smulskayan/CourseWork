@@ -4,74 +4,113 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F7FDE7">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- Заголовок -->
+        <TextView
+            android:id="@+id/welcome_message"
+            android:layout_width="0dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="5dp"
+            android:fontFamily="serif"
+            android:text="Личный кабинет"
+            android:textAlignment="textStart"
+            android:textAllCaps="false"
+            android:textColor="#94AF48"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- Имя -->
         <TextView
             android:id="@+id/first_name_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Имя: "
-            app:layout_constraintTop_toTopOf="parent"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            android:textAlignment="textStart"
+            app:layout_constraintTop_toBottomOf="@id/welcome_message"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"/>
 
+        <!-- Пол -->
         <TextView
             android:id="@+id/gender_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Пол: "
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            android:textAlignment="textStart"
             app:layout_constraintTop_toBottomOf="@id/first_name_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"/>
 
+        <!-- Рост -->
         <TextView
             android:id="@+id/height_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Рост: "
+            android:textSize="18sp"
+            android:fontFamily="serif"
             app:layout_constraintTop_toBottomOf="@id/gender_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"/>
 
+        <!-- Вес -->
         <TextView
             android:id="@+id/weight_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Вес: "
+            android:textSize="18sp"
+            android:fontFamily="serif"
             app:layout_constraintTop_toBottomOf="@id/height_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"/>
 
+        <!-- Поле веса (редактируемое) -->
         <EditText
             android:id="@+id/weight_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:hint="Вес (кг)"
             android:inputType="numberDecimal"
+            android:textSize="18sp"
+            android:fontFamily="serif"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/height_text"
+            app:layout_constraintTop_toBottomOf="@id/weight_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"/>
 
+        <!-- Email -->
         <TextView
             android:id="@+id/email_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="84dp"
             android:text="Email: "
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            app:layout_constraintTop_toBottomOf="@id/weight_edit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weight_edit" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"/>
 
+        <!-- Email (редактируемое) -->
         <EditText
             android:id="@+id/email_edit"
             android:layout_width="0dp"
@@ -79,43 +118,49 @@
             android:hint="Email"
             android:inputType="textEmailAddress"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/weight_edit"
+            app:layout_constraintTop_toBottomOf="@id/email_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"/>
 
+        <!-- Цель -->
         <TextView
             android:id="@+id/goal_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="56dp"
             android:text="Цель: "
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            app:layout_constraintTop_toBottomOf="@id/email_edit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/email_edit" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"/>
 
+        <!-- Спиннер цели -->
         <Spinner
             android:id="@+id/goal_spinner"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/email_edit"
+            app:layout_constraintTop_toBottomOf="@id/goal_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"/>
 
+        <!-- Возраст -->
         <TextView
             android:id="@+id/age_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
             android:text="Возраст: "
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:textSize="18sp"
+            android:fontFamily="serif"
+            app:layout_constraintTop_toBottomOf="@id/goal_spinner"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/goal_spinner" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="15dp"/>
 
+        <!-- Поле возраста -->
         <EditText
             android:id="@+id/age_edit"
             android:layout_width="0dp"
@@ -123,53 +168,65 @@
             android:hint="Возраст"
             android:inputType="number"
             android:visibility="gone"
-            app:layout_constraintTop_toBottomOf="@id/goal_spinner"
+            app:layout_constraintTop_toBottomOf="@id/age_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"/>
 
+        <!-- Кнопка Редактировать -->
         <Button
             android:id="@+id/edit_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="104dp"
             android:text="Редактировать"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:backgroundTint="#94AF48"
+            app:layout_constraintTop_toBottomOf="@id/age_edit"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/age_edit" />
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="30dp"/>
 
+        <!-- Кнопка Сохранить -->
         <Button
             android:id="@+id/save_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Сохранить"
             android:visibility="gone"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:backgroundTint="#94AF48"
             app:layout_constraintTop_toBottomOf="@id/edit_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"/>
 
+        <!-- Кнопка Выход -->
         <Button
             android:id="@+id/logout_button"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Выход"
+            android:fontFamily="serif"
+            android:textStyle="bold"
+            android:backgroundTint="#CCCCCC"
             app:layout_constraintTop_toBottomOf="@id/save_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="15dp"/>
 
+        <!-- Текст ошибки -->
         <TextView
             android:id="@+id/error_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/error_red"
+            android:textColor="@color/nav_item_color"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@id/logout_button"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginTop="8dp" />
+            android:layout_marginTop="8dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

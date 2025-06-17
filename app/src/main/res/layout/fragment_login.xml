@@ -4,47 +4,84 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F7FDE7">
+
+    <ImageButton
+        android:id="@+id/back_button"
+        android:layout_width="55dp"
+        android:layout_height="54dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:background="@null"
+        android:contentDescription="Назад"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/welcome_message"
+        android:layout_width="327dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="15dp"
+        android:fontFamily="serif"
+        android:text="Вход"
+        android:textAlignment="viewStart"
+        android:textAllCaps="true"
+        android:textColor="#94AF48"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/back_button" />
 
     <EditText
         android:id="@+id/email_edit_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="48dp"
         android:hint="Email"
+        android:layout_marginTop="15dp"
         android:inputType="textEmailAddress"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:minHeight="48dp"
+        android:fontFamily="serif"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome_message" />
 
     <EditText
         android:id="@+id/password_edit_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:minHeight="48dp"
+        android:layout_marginTop="15dp"
         android:hint="Пароль"
+        android:fontFamily="serif"
         android:inputType="textPassword"
         app:layout_constraintTop_toBottomOf="@id/email_edit_text"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="8dp" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
         android:id="@+id/login_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Войти"
+        android:backgroundTint="#94AF48"
+        android:fontFamily="serif"
+        android:textStyle="bold"
         app:layout_constraintTop_toBottomOf="@id/password_edit_text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="15dp" />
 
     <TextView
         android:id="@+id/error_text_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/error_red"
+        android:textColor="@color/nav_item_color"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/login_button"
         app:layout_constraintStart_toStartOf="parent"

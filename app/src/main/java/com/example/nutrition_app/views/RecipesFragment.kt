@@ -3,7 +3,6 @@ package com.example.nutrition_app.views
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.content.Context
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -22,6 +21,8 @@ class RecipesFragment : Fragment() {
         RecipesViewModel.Factory(AppDatabase.getDatabase(requireContext()))
     }
 
+    private lateinit var recipesAdapter: RecipesAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,42 +34,29 @@ class RecipesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Настройка RecyclerView для избранных рецептов
-        val favoriteAdapter = RecipesAdapter { recipe ->
-            viewModel.toggleFavorite(recipe.id)
-        }
-        binding.favoriteRecipesRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        binding.favoriteRecipesRecyclerView.adapter = favoriteAdapter
-
-        // Настройка RecyclerView для всех рецептов
-        val userAdapter = RecipesAdapter { recipe ->
+        recipesAdapter = RecipesAdapter { recipe ->
             viewModel.toggleFavorite(recipe.id)
         }
         binding.userRecipesRecyclerView.layoutManager = LinearLayoutManager(context)
-        binding.userRecipesRecyclerView.adapter = userAdapter
+        binding.userRecipesRecyclerView.adapter = recipesAdapter
 
-        // Загрузка рецептов
-        val userId = requireContext().getSharedPreferences("prefs", Context.MODE_PRIVATE)
-            .getInt("userId", -1)
-        if (userId != -1) {
-            viewModel.loadRecipes(userId)
+        viewModel.allRecipes.observe(viewLifecycleOwner) { recipes ->
+            recipesAdapter.submitList(recipes)
         }
 
-        // Наблюдение за избранными рецептами
-        viewModel.favoriteRecipes.observe(viewLifecycleOwner) { recipes ->
-            favoriteAdapter.submitList(recipes)
-            binding.favoriteRecipesTitle.visibility = if (recipes.isEmpty()) View.GONE else View.VISIBLE
+        viewModel.navigationEvent.observe(viewLifecycleOwner) { event ->
+            when (event) {
+                is RecipesViewModel.NavigationEvent.NavigateToRecipeEdit -> {
+                    findNavController().navigate(R.id.action_recipes_to_recipe_edit)
+                }
+            }
         }
 
-        // Наблюдение за всеми рецептами
-        viewModel.userRecipes.observe(viewLifecycleOwner) { recipes ->
-            userAdapter.submitList(recipes)
-        }
-
-        // Переход к созданию рецепта
         binding.fabAddRecipe.setOnClickListener {
-            findNavController().navigate(R.id.action_recipes_to_recipe_edit)
+            viewModel.onAddRecipeClicked()
         }
+
+        viewModel.loadUserId(requireContext())
     }
 
     override fun onDestroyView() {

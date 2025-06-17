@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="error_red">#FF0000</color>
-    <color name="red">#FF0000</color>
+    <color name="error_red">#A2D5B0</color>
+    <color name="red">#94AF48</color>
     <color name="gray">#888888</color>
-    <color name="purple_500">#6200EE</color>
-    <color name="purple_700">#3700B3</color>
+    <color name="purple_500">#94AF48</color>
+    <color name="purple_700">#94AF48</color>
     <color name="teal_200">#FFCDD2</color>
     <color name="teal_700">#007C44</color>
     <color name="white">#FFFFFF</color>

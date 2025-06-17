@@ -4,6 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.EditText
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -38,10 +41,7 @@ class RecipeEditFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentRecipeEditBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -49,7 +49,6 @@ class RecipeEditFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Загрузка рецепта для редактирования
         viewModel.loadRecipe(args.recipeId)
         viewModel.recipe.observe(viewLifecycleOwner) { recipe ->
             recipe?.let {
@@ -66,14 +65,37 @@ class RecipeEditFragment : Fragment() {
             }
         }
 
-        // Выбор фото
+        fun fieldValidator(view: EditText, errorMsg: String) = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                view.error = if (s.isNullOrBlank()) errorMsg else null
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+
+        fun numberValidator(view: EditText, errorMsg: String) = object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val value = s.toString().toFloatOrNull()
+                view.error = if (value == null || value <= 0f) errorMsg else null
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        }
+
+
+        binding.titleEdit.addTextChangedListener(fieldValidator(binding.titleEdit, "Название обязательно"))
+        binding.caloriesEdit.addTextChangedListener(numberValidator(binding.caloriesEdit, "Введите калории > 0"))
+        binding.proteinEdit.addTextChangedListener(numberValidator(binding.proteinEdit, "Введите белки > 0"))
+        binding.fatEdit.addTextChangedListener(numberValidator(binding.fatEdit, "Введите жиры > 0"))
+        binding.carbsEdit.addTextChangedListener(numberValidator(binding.carbsEdit, "Введите углеводы > 0"))
+        binding.instructionsEdit.addTextChangedListener(fieldValidator(binding.instructionsEdit, "Введите инструкцию"))
+
         binding.recipePhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_PICK)
             intent.type = "image/*"
             pickImage.launch(intent)
         }
 
-        // Сохранение рецепта
         binding.saveButton.setOnClickListener {
             val title = binding.titleEdit.text.toString()
             val calories = binding.caloriesEdit.text.toString()
@@ -82,6 +104,21 @@ class RecipeEditFragment : Fragment() {
             val carbs = binding.carbsEdit.text.toString()
             val instructions = binding.instructionsEdit.text.toString()
             val isFavorite = viewModel.recipe.value?.isFavorite ?: false
+
+            val hasErrors = listOf(
+                binding.titleEdit,
+                binding.caloriesEdit,
+                binding.proteinEdit,
+                binding.fatEdit,
+                binding.carbsEdit,
+                binding.instructionsEdit
+            ).any { it.error != null || it.text.isNullOrBlank() }
+
+            if (hasErrors) {
+                binding.errorText.text = "Пожалуйста, заполните корректно все поля"
+                binding.errorText.visibility = View.VISIBLE
+                return@setOnClickListener
+            }
 
             viewModel.saveRecipe(
                 context = requireContext(),
@@ -97,7 +134,6 @@ class RecipeEditFragment : Fragment() {
             )
         }
 
-        // Обработка результата сохранения
         viewModel.saveResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 findNavController().navigate(R.id.action_recipe_edit_to_recipes)
@@ -106,6 +142,27 @@ class RecipeEditFragment : Fragment() {
                 binding.errorText.visibility = View.VISIBLE
             }
         }
+
+        binding.cancelButton.setOnClickListener {
+            findNavController().navigate(R.id.action_recipe_edit_to_recipes)
+        }
+    }
+
+    private fun fieldValidator(view: androidx.appcompat.widget.AppCompatEditText, errorMsg: String) = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            view.error = if (s.isNullOrBlank()) errorMsg else null
+        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+    }
+
+    private fun numberValidator(view: androidx.appcompat.widget.AppCompatEditText, errorMsg: String) = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            val value = s.toString().toFloatOrNull()
+            view.error = if (value == null || value <= 0f) errorMsg else null
+        }
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
     }
 
     override fun onDestroyView() {

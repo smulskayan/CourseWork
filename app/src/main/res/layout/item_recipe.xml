@@ -36,6 +36,7 @@
             android:layout_height="wrap_content"
             android:text="Название рецепта"
             android:textSize="16sp"
+            android:fontFamily="serif"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@id/recipe_photo"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,11 +47,29 @@
             android:id="@+id/recipe_macros"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="К: 0ккал, Б: 0г, Ж: 0г, У: 0г"
+            android:fontFamily="serif"
+            android:text="Ккал: 0ккал,\nБелки: 0г,\nЖиры: 0г, \nУглеводы: 0г"
             app:layout_constraintTop_toBottomOf="@id/recipe_name"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_margin="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="15dp"/>
+        <TextView
+            android:id="@+id/recipe_instructions"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="serif"
+            android:text="Инструкция:\n ..."
+            android:layout_marginTop="15dp"
+            android:textSize="14sp"
+            android:maxLines="100"
+            android:ellipsize="none"
+            app:layout_constraintTop_toBottomOf="@id/recipe_macros"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,6 +1,8 @@
 package com.example.nutrition_app.views
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,11 +36,9 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Настройка выпадающего списка целей
         val goals = arrayOf("Поддержание веса", "Снижение веса", "Набор веса")
         binding.goalSpinner.adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, goals)
 
-        // Загрузка данных пользователя
         viewModel.loadUser(requireContext())
         viewModel.user.observe(viewLifecycleOwner) { user ->
             user?.let {
@@ -50,30 +50,84 @@ class ProfileFragment : Fragment() {
                 binding.goalText.text = "Цель: ${it.goal}"
                 binding.ageText.text = "Возраст: ${it.age} лет"
 
-                // Установка значений для редактирования
                 binding.ageEdit.setText(it.age.toString())
                 binding.weightEdit.setText(it.weight.toString())
                 binding.emailEdit.setText(it.email)
                 binding.goalSpinner.setSelection(goals.indexOf(it.goal))
+
+                // Очистка ошибок при загрузке
+                binding.ageEdit.error = null
+                binding.weightEdit.error = null
+                binding.emailEdit.error = null
+                binding.errorText.visibility = View.GONE
             }
         }
 
-        // Переключение режима редактирования
+        binding.ageEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val ageInt = s.toString().toIntOrNull()
+                if (ageInt == null || ageInt <= 18 || ageInt > 100) {
+                    binding.ageEdit.error = "Некорректный возраст"
+                } else {
+                    binding.ageEdit.error = null
+                }
+            }
+        })
+
+        binding.weightEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                val weightFloat = s.toString().toFloatOrNull()
+                if (weightFloat == null || weightFloat <= 30 || weightFloat > 300) {
+                    binding.weightEdit.error = "Некорректный вес"
+                } else {
+                    binding.weightEdit.error = null
+                }
+            }
+        })
+
+        binding.emailEdit.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                if (!android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()) {
+                    binding.emailEdit.error = "Некорректный email"
+                } else {
+                    binding.emailEdit.error = null
+                }
+            }
+        })
+
         binding.editButton.setOnClickListener {
             isEditing = !isEditing
             updateEditMode()
+            if (!isEditing) {
+                binding.ageEdit.error = null
+                binding.weightEdit.error = null
+                binding.emailEdit.error = null
+                binding.errorText.visibility = View.GONE
+            }
         }
 
-        // Сохранение изменений
         binding.saveButton.setOnClickListener {
             val age = binding.ageEdit.text.toString()
             val weight = binding.weightEdit.text.toString()
             val goal = binding.goalSpinner.selectedItem.toString()
             val email = binding.emailEdit.text.toString()
-            viewModel.updateUser(requireContext(), age, weight, goal, email)
+
+            val hasError = listOf(binding.ageEdit, binding.weightEdit, binding.emailEdit).any { it.error != null }
+            if (hasError) {
+                binding.errorText.text = "Пожалуйста, исправьте ошибки в форме"
+                binding.errorText.visibility = View.VISIBLE
+            } else {
+                binding.errorText.visibility = View.GONE
+                viewModel.updateUser(requireContext(), age, weight, goal, email)
+            }
         }
 
-        // Обработка результата обновления
         viewModel.updateResult.observe(viewLifecycleOwner) { result ->
             result.onSuccess {
                 isEditing = false
@@ -85,7 +139,6 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        // Выход
         binding.logoutButton.setOnClickListener {
             viewModel.logout(requireContext())
             findNavController().navigate(R.id.action_profile_to_welcome)

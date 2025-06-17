@@ -1,11 +1,7 @@
 package com.example.nutrition_app.viewmodel
 
 import android.content.Context
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.example.nutrition_app.model.AppDatabase
 import com.example.nutrition_app.model.entities.Recipe
 import kotlinx.coroutines.launch
@@ -45,25 +41,35 @@ class RecipeEditViewModel(private val db: AppDatabase) : ViewModel() {
                 return@launch
             }
 
-            // Валидация
             if (title.isBlank()) {
                 _saveResult.value = Result.failure(Exception("Название не может быть пустым"))
                 return@launch
             }
-            val caloriesFloat = calories.toFloatOrNull() ?: 0f
-            val proteinFloat = protein.toFloatOrNull() ?: 0f
-            val fatFloat = fat.toFloatOrNull() ?: 0f
-            val carbsFloat = carbs.toFloatOrNull() ?: 0f
+
+            val caloriesFloat = calories.toFloatOrNull()
+            val proteinFloat = protein.toFloatOrNull()
+            val fatFloat = fat.toFloatOrNull()
+            val carbsFloat = carbs.toFloatOrNull()
+
+            if (listOf(caloriesFloat, proteinFloat, fatFloat, carbsFloat).any { it == null || it <= 0f }) {
+                _saveResult.value = Result.failure(Exception("Пищевая ценность должна быть положительным числом"))
+                return@launch
+            }
+
+            if (instructions.isBlank()) {
+                _saveResult.value = Result.failure(Exception("Инструкция не может быть пустой"))
+                return@launch
+            }
 
             val recipe = Recipe(
                 id = recipeId,
                 userId = userId,
                 title = title,
                 photo = photoUri,
-                carbs = carbsFloat,
-                calories = caloriesFloat,
-                protein = proteinFloat,
-                fat = fatFloat,
+                calories = caloriesFloat!!,
+                protein = proteinFloat!!,
+                fat = fatFloat!!,
+                carbs = carbsFloat!!,
                 instructions = instructions,
                 isFavorite = isFavorite
             )

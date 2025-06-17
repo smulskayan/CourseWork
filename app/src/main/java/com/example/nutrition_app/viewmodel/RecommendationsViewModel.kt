@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.example.nutrition_app.model.AppDatabase
 import com.example.nutrition_app.model.dao.DailySummary
-import com.example.nutrition_app.model.entities.User
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -24,49 +23,77 @@ class RecommendationsViewModel(private val database: AppDatabase) : ViewModel() 
 
     fun loadRecommendations(userId: Int) {
         viewModelScope.launch {
-            // Получение данных пользователя
             val user = database.userDao().getUserById(userId)
             if (user == null) {
                 _dailySummary.value = DailySummary(0f, 0f, 0f, 0f, 0f)
-                _recommendations.value = Recommendations(0f, 0f)
+                _recommendations.value = Recommendations(
+                    caloriesRemaining = 0f,
+                    waterRemaining = 0f,
+                    proteinTarget = 0f,
+                    fatTarget = 0f,
+                    carbsTarget = 0f,
+                    targetCalories = 0f,
+                    targetWater = 0f
+                )
                 return@launch
             }
 
-            // Получение статистики за сегодня
             val dateFormat = SimpleDateFormat("dd.MM.yyyy", Locale.getDefault())
             val today = dateFormat.format(Date())
             val summary = database.foodDiaryDao().getDailySummary(userId, today)
                 ?: DailySummary(0f, 0f, 0f, 0f, 0f)
             _dailySummary.value = summary
 
-            // Расчет BMR
-            val bmr = if (user.gender == "male") {
+            val bmr = if (user.gender == "Мужской") {
                 10 * user.weight + 6.25f * user.height - 5f * user.age + 5f
             } else {
                 10 * user.weight + 6.25f * user.height - 5f * user.age - 161f
             }
 
-            // Расчет калорий по цели
             val targetCalories = when (user.goal) {
-                "lose" -> bmr * 0.8f
-                "gain" -> bmr * 1.4f
-                else -> bmr * 1.2f // maintain
+                "Снижение веса" -> bmr * 0.8f
+                "Набор веса" -> bmr * 1.4f
+                "Поддержание веса" -> bmr * 1.2f
+                else -> bmr * 1.2f
             }
 
-            // Норма воды: 30 мл/кг
             val targetWater = user.weight * 30
 
-            // Остаток
             val caloriesRemaining = (targetCalories - summary.totalCalories).coerceAtLeast(0f)
             val waterRemaining = (targetWater - summary.totalWater).coerceAtLeast(0f)
 
-            _recommendations.value = Recommendations(caloriesRemaining, waterRemaining)
+            val (proteinPercent, fatPercent, carbsPercent) = when (user.goal) {
+                "Снижение веса" -> Triple(0.30f, 0.25f, 0.45f)
+                "Набор веса" -> Triple(0.20f, 0.25f, 0.55f)
+                "Поддержание веса" -> Triple(0.25f, 0.30f, 0.45f)
+                else -> Triple(0.25f, 0.30f, 0.45f)
+            }
+
+            val proteinTarget = (targetCalories * proteinPercent) / 4f
+            val fatTarget = (targetCalories * fatPercent) / 9f
+            val carbsTarget = (targetCalories * carbsPercent) / 4f
+
+            _recommendations.value = Recommendations(
+                targetCalories = targetCalories,
+                targetWater = targetWater,
+                caloriesRemaining = caloriesRemaining,
+                waterRemaining = waterRemaining,
+                proteinTarget = proteinTarget,
+                fatTarget = fatTarget,
+                carbsTarget = carbsTarget
+            )
+
         }
     }
 
     data class Recommendations(
+        val targetCalories: Float,
+        val targetWater: Float,
         val caloriesRemaining: Float,
-        val waterRemaining: Float
+        val waterRemaining: Float,
+        val proteinTarget: Float,
+        val fatTarget: Float,
+        val carbsTarget: Float,
     )
 
     class Factory(private val context: Context) : ViewModelProvider.Factory {

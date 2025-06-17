@@ -33,12 +33,15 @@ class RecipesAdapter(
         private val nameTextView: TextView = itemView.findViewById(R.id.recipe_name)
         private val macrosTextView: TextView = itemView.findViewById(R.id.recipe_macros)
         private val favoriteIcon: ImageView = itemView.findViewById(R.id.favorite_icon)
+        private val instructionsTextView: TextView = itemView.findViewById(R.id.recipe_instructions)
 
         fun bind(recipe: Recipe, onFavoriteClick: (Recipe) -> Unit) {
             nameTextView.text = recipe.title
-            macrosTextView.text = "К: ${recipe.calories}ккал, Б: ${recipe.protein}г, Ж: ${recipe.fat}г, У: ${recipe.carbs}г"
+            macrosTextView.text = "Калории: ${recipe.calories} ккал, " +
+                    "\nБелки: ${recipe.protein} г, \nЖиры: ${recipe.fat} г, \nУглеводы: ${recipe.carbs} г"
+            instructionsTextView.text = "Инструкция: \n${recipe.instructions}\n"
 
-            // Загрузка фото
+
             if (recipe.photo != null) {
                 Glide.with(itemView.context)
                     .load(recipe.photo)
@@ -47,7 +50,6 @@ class RecipesAdapter(
                 photoImageView.setImageResource(R.drawable.placeholder_image)
             }
 
-            // Установка иконки избранного
             favoriteIcon.setImageResource(
                 if (recipe.isFavorite) R.drawable.ic_favorite_filled else R.drawable.ic_favorite_border
             )
@@ -58,10 +60,8 @@ class RecipesAdapter(
                 )
             )
 
-            // Обработка клика по сердечку
             favoriteIcon.setOnClickListener { onFavoriteClick(recipe) }
 
-            // Переход к редактированию при клике на карточку
             itemView.setOnClickListener {
                 val action = RecipesFragmentDirections.actionRecipesToRecipeEdit(recipe.id)
                 itemView.findNavController().navigate(action)

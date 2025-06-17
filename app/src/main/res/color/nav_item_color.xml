@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Активная вкладка -->
+    <item android:color="#94AF48" android:state_checked="true" />
+    <!-- Неактивные вкладки -->
+    <item android:color="#C1C7C1" android:state_checked="false" />
+</selector>
